@@ -1,0 +1,28 @@
+{
+	"uuid": "bbf7c879-a2c8-43df-8cbc-b258276698bf",
+	"shortName": "Hacker News",
+	"longName": "Hacker News",
+	"companyName": "Neal",
+	"versionCode": 1,
+	"versionLabel": "1.0.0",
+	"watchapp": {
+		"watchface": false
+	},
+	"appKeys": {
+		"endpoint": 0,
+		"index": 1,
+		"title": 2,
+		"subtitle": 3,
+		"summary": 4
+	},
+	"resources": {
+		"media": [
+			{
+				"menuIcon": true,
+				"type": "png",
+				"name": "IMAGE_MENU_ICON",
+				"file": "images/icon.png"
+			}
+		]
+	}
+}
