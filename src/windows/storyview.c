@@ -3,6 +3,9 @@
 #include "../libs/pebble-assist.h"
 #include "../common.h"
 
+static void back_single_click_handler(ClickRecognizerRef recognizer, void *context);
+static void click_config_provider(void *context);
+
 static Window *window;
 static ScrollLayer *scroll_layer;
 static TextLayer *title_layer;
@@ -17,6 +20,9 @@ void storyview_init(char *title, char *summary) {
 
 	scroll_layer = scroll_layer_create(bounds);
 	scroll_layer_set_click_config_onto_window(scroll_layer, window);
+	scroll_layer_set_callbacks(scroll_layer, (ScrollLayerCallbacks) {
+		.click_config_provider = click_config_provider,
+	});
 
 	title_layer = text_layer_create(max_text_bounds);
 	text_layer_set_font(title_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
@@ -38,9 +44,7 @@ void storyview_init(char *title, char *summary) {
 	scroll_layer_add_child(scroll_layer, text_layer_get_layer(summary_layer));
 
 	layer_add_child(window_layer, scroll_layer_get_layer(scroll_layer));
-}
 
-void storyview_show(void) {
 	window_stack_push(window, true);
 }
 
@@ -50,3 +54,15 @@ void storyview_destroy(void) {
 	scroll_layer_destroy_safe(scroll_layer);
 	window_destroy_safe(window);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
+
+static void back_single_click_handler(ClickRecognizerRef recognizer, void *context) {
+	storyview_destroy();
+	window_stack_pop(true);
+}
+
+static void click_config_provider(void *context) {
+	window_single_click_subscribe(BUTTON_ID_BACK, back_single_click_handler);
+}
+

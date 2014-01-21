@@ -1,8 +1,9 @@
 #pragma once
 
-#define ENDPOINT_FRONTPAGE 0
-#define ENDPOINT_NEWPOSTS 1
-#define ENDPOINT_BESTPOSTS 2
+#define ENDPOINT_TOP 0
+#define ENDPOINT_NEW 1
+#define ENDPOINT_BST 2
+#define ENDPOINT_ASK 3
 
 typedef struct {
 	int index;
@@ -16,4 +17,5 @@ enum {
 	HN_KEY_TITLE = 0x2,
 	HN_KEY_SUBTITLE = 0x3,
 	HN_KEY_SUMMARY = 0x4,
+	HN_KEY_ERROR = 0x5,
 };

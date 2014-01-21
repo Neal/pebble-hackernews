@@ -13,7 +13,8 @@
 		"index": 1,
 		"title": 2,
 		"subtitle": 3,
-		"summary": 4
+		"summary": 4,
+		"error": 5
 	},
 	"resources": {
 		"media": [

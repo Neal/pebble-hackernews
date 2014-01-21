@@ -10,10 +10,11 @@
 
 #define MENU_SECTION_ROWS_HOME 4
 
-#define MENU_ROW_HOME_FRONTPAGE 0
-#define MENU_ROW_HOME_NEWPOSTS 1
-#define MENU_ROW_HOME_BESTPOSTS 2
-#define MENU_ROW_HOME_SETTINGS 3
+#define MENU_ROW_HOME_TOPSTORIES 0
+#define MENU_ROW_HOME_NEWSTORIES 1
+#define MENU_ROW_HOME_BESTSTORIES 2
+#define MENU_ROW_HOME_ASKHN 3
+#define MENU_ROW_HOME_SETTINGS 4
 
 static Window *window;
 
@@ -45,18 +46,21 @@ static void menu_draw_header_callback(GContext *ctx, const Layer *cell_layer, ui
 }
 
 static void menu_draw_row_callback(GContext *ctx, const Layer *cell_layer, MenuIndex *cell_index, void *callback_context) {
-	char label[12] = "";
+	char label[13] = "";
 	switch (cell_index->section) {
 		case MENU_SECTION_HOME:
 			switch (cell_index->row) {
-				case MENU_ROW_HOME_FRONTPAGE:
-					strcpy(label, "Front Page");
+				case MENU_ROW_HOME_TOPSTORIES:
+					strcpy(label, "Top Stories");
 					break;
-				case MENU_ROW_HOME_NEWPOSTS:
-					strcpy(label, "New Posts");
+				case MENU_ROW_HOME_NEWSTORIES:
+					strcpy(label, "New Stories");
 					break;
-				case MENU_ROW_HOME_BESTPOSTS:
-					strcpy(label, "Best Posts");
+				case MENU_ROW_HOME_BESTSTORIES:
+					strcpy(label, "Best Stories");
+					break;
+				case MENU_ROW_HOME_ASKHN:
+					strcpy(label, "Ask HN");
 					break;
 				case MENU_ROW_HOME_SETTINGS:
 					strcpy(label, "Settings");
@@ -72,14 +76,17 @@ static void menu_select_callback(struct MenuLayer *menu_layer, MenuIndex *cell_i
 	switch (cell_index->section) {
 		case MENU_SECTION_HOME:
 			switch (cell_index->row) {
-				case MENU_ROW_HOME_FRONTPAGE:
-					storylist_show(ENDPOINT_FRONTPAGE);
+				case MENU_ROW_HOME_TOPSTORIES:
+					storylist_init(ENDPOINT_TOP);
 					break;
-				case MENU_ROW_HOME_NEWPOSTS:
-					storylist_show(ENDPOINT_NEWPOSTS);
+				case MENU_ROW_HOME_NEWSTORIES:
+					storylist_init(ENDPOINT_NEW);
 					break;
-				case MENU_ROW_HOME_BESTPOSTS:
-					storylist_show(ENDPOINT_BESTPOSTS);
+				case MENU_ROW_HOME_BESTSTORIES:
+					storylist_init(ENDPOINT_BST);
+					break;
+				case MENU_ROW_HOME_ASKHN:
+					storylist_init(ENDPOINT_ASK);
 					break;
 				case MENU_ROW_HOME_SETTINGS:
 					break;
@@ -107,8 +114,6 @@ static void init(void) {
 	menu_layer_add_to_window(menu_layer, window);
 
 	window_stack_push(window, true /* animated */);
-
-	storylist_init();
 }
 
 static void deinit(void) {

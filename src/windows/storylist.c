@@ -27,7 +27,9 @@ static void menu_select_long_callback(struct MenuLayer *menu_layer, MenuIndex *c
 static Window *window;
 static MenuLayer *menu_layer;
 
-void storylist_init(void) {
+void storylist_init(int end_point) {
+	endpoint = end_point;
+
 	window = window_create();
 
 	menu_layer = menu_layer_create_fullscreen(window);
@@ -43,12 +45,10 @@ void storylist_init(void) {
 	});
 	menu_layer_set_click_config_onto_window(menu_layer, window);
 	menu_layer_add_to_window(menu_layer, window);
-}
 
-void storylist_show(int end_point) {
-	endpoint = end_point;
-	refresh_list();
 	window_stack_push(window, true);
+
+	refresh_list();
 }
 
 void storylist_destroy(void) {
@@ -63,6 +63,7 @@ void storylist_in_received_handler(DictionaryIterator *iter) {
 	Tuple *title_tuple = dict_find(iter, HN_KEY_TITLE);
 	Tuple *subtitle_tuple = dict_find(iter, HN_KEY_SUBTITLE);
 	Tuple *summary_tuple = dict_find(iter, HN_KEY_SUMMARY);
+	Tuple *error_tuple = dict_find(iter, HN_KEY_ERROR);
 
 	if (index_tuple && title_tuple && subtitle_tuple) {
 		HNStory story;
@@ -74,7 +75,7 @@ void storylist_in_received_handler(DictionaryIterator *iter) {
 		menu_layer_reload_data_and_mark_dirty(menu_layer);
 		APP_LOG(APP_LOG_LEVEL_DEBUG, "received story [%d] %s - %s", story.index, story.title, story.subtitle);
 	}
-	else if (title_tuple) {
+	else if (title_tuple && !summary_tuple) {
 		strncpy(error, title_tuple->value->cstring, sizeof(error));
 		menu_layer_reload_data_and_mark_dirty(menu_layer);
 	}
@@ -82,7 +83,6 @@ void storylist_in_received_handler(DictionaryIterator *iter) {
 	if (summary_tuple) {
 		if (title_tuple) {
 			storyview_init(title_tuple->value->cstring, summary);
-			storyview_show();
 		} else {
 			strcat(summary, summary_tuple->value->cstring);
 		}
@@ -142,14 +142,17 @@ static int16_t menu_get_cell_height_callback(struct MenuLayer *menu_layer, MenuI
 
 static void menu_draw_header_callback(GContext *ctx, const Layer *cell_layer, uint16_t section_index, void *callback_context) {
 	switch (endpoint) {
-		case ENDPOINT_FRONTPAGE:
-			menu_cell_basic_header_draw(ctx, cell_layer, "Hacker News - Front Page");
+		case ENDPOINT_TOP:
+			menu_cell_basic_header_draw(ctx, cell_layer, "Hacker News - Top Stories");
 			break;
-		case ENDPOINT_NEWPOSTS:
-			menu_cell_basic_header_draw(ctx, cell_layer, "Hacker News - New Posts");
+		case ENDPOINT_NEW:
+			menu_cell_basic_header_draw(ctx, cell_layer, "Hacker News - New Stories");
 			break;
-		case ENDPOINT_BESTPOSTS:
-			menu_cell_basic_header_draw(ctx, cell_layer, "Hacker News - Best Posts");
+		case ENDPOINT_BST:
+			menu_cell_basic_header_draw(ctx, cell_layer, "Hacker News - Best Stories");
+			break;
+		case ENDPOINT_ASK:
+			menu_cell_basic_header_draw(ctx, cell_layer, "Hacker News - Ask HN");
 			break;
 	}
 }
