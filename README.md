@@ -26,3 +26,7 @@ Long click select in the story list view refreshes the list (until i figure out 
 Contributions are much welcome!
 
 ###### Thanks to @matthewtole for multi-timer! <small>(Good MenuLayer example)</small>
+
+## License
+
+Available under the MIT license. See the LICENSE file for more info.
